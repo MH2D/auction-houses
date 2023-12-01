@@ -5,7 +5,7 @@ import plotly.express as px
 
 
 DATA_PATH = Path("data")
-df = pd.read_pickle(DATA_PATH / "certif_one_gem_processed_data.pkl")
+df = pd.read_pickle(DATA_PATH / "certif_one_gem_for_streamlit.pkl")
 
 # preprocessing
 df = df[df.carat >= 1].copy()
