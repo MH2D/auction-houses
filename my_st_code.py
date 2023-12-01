@@ -16,8 +16,8 @@ st.title("My auction house")
 
 # Create a navigation menu
 # page = st.sidebar.selectbox("Select a page", ["Diamonds", "Colored gemstones", "My biggest sales"])
-is_market, is_diamond, is_gems, is_big_sales = st.tabs(
-    ["Overall market", "Diamonds", "Colored gemstones", "My biggest sales"]
+is_diamond, is_gems, is_big_sales = st.tabs(
+    [ "Diamonds", "Colored gemstones", "My biggest sales"]
 )
 
 with is_diamond:
