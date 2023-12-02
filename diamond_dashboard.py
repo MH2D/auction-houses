@@ -43,6 +43,7 @@ def main_diamond(carat_df):
     st.markdown(
         """
     ### Clarity analysis
+    This section purpose is to better understand the sales with regard to the clarity of the diamonds.
     """
     )
     clarity_grouped = (
@@ -51,6 +52,7 @@ def main_diamond(carat_df):
             counted=("clarity", "count"),
             valued=("PriceRealised", "sum"),
             mean_price_per_carat=("price_per_ct", "mean"),
+            average_carat=("carat", "mean"),
         )
         .reset_index()
     )
@@ -65,19 +67,33 @@ def main_diamond(carat_df):
 
     st.plotly_chart(clarity_pie, use_container_width=True)
 
-    bar_price_clarity = px.bar(
-        clarity_grouped.sort_values(by="mean_price_per_carat", ascending=False),
-        x="clarity",
-        y="mean_price_per_carat",
-        color="counted",
-        color_continuous_scale=px.colors.sequential.RdBu_r,
-    )
+    left_column, right_column = st.columns([0.3, 0.9])
+    # Display tick variables in the left column
+    with left_column:
+        st.markdown('#### Select the variable to plot')
+        tick_variables = {
+            "total price realised (EUR)": "valued",
+            "Average (EUR/carat)": "mean_price_per_carat",
+            "Average size (carat)": "average_carat",
+        }
+        selected_variable = st.radio("", tick_variables.keys())
 
-    bar_price_clarity.update_layout(
-        title="Price of the different clarities",
-        yaxis=dict(title="Average €/carat"),
-        showlegend=False,
-    )
-    bar_price_clarity.update_coloraxes(showscale=False)
-    bar_price_clarity.update_layout(dragmode=False)
-    st.plotly_chart(bar_price_clarity, use_container_width=True)
+    # Display the plot in the right column
+    with right_column:
+        bar_price_clarity = px.bar(
+            clarity_grouped.sort_values(by=tick_variables[selected_variable], ascending=False),
+            x="clarity",
+            y=tick_variables[selected_variable],
+            color="counted",
+            color_continuous_scale=px.colors.sequential.RdBu_r,
+        )
+
+        bar_price_clarity.update_layout(
+            title=selected_variable,
+            yaxis=dict(title="Average €/carat"),
+            showlegend=False,
+        )
+
+        bar_price_clarity.update_coloraxes(showscale=False)
+        bar_price_clarity.update_layout(dragmode=False)
+        st.plotly_chart(bar_price_clarity, use_container_width=True)
