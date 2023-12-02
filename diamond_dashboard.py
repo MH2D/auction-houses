@@ -97,3 +97,10 @@ def main_diamond(carat_df):
         bar_price_clarity.update_coloraxes(showscale=False)
         bar_price_clarity.update_layout(dragmode=False)
         st.plotly_chart(bar_price_clarity, use_container_width=True)
+
+
+    st.markdown(
+        """
+    ### Color analysis
+    """
+    )
