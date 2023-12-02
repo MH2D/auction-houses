@@ -8,6 +8,7 @@ import geopandas as gpd
 
 DATA_PATH = Path("data")
 df = pd.read_pickle(DATA_PATH / "certified_one_gem_processed_data.pkl")
+df['clarity'] = df.clarity.str.replace(' ','')
 world_gdf = gpd.read_file(DATA_PATH / "gem_location/gem_location.shp")
 # preprocessing
 df = df[df.carat >= 1].copy()
