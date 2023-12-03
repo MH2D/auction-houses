@@ -80,15 +80,25 @@ def plot_some_gems(df, number=5, num_cols=3):
         st.session_state.pages += 1
 
     gemstone_sel = st.selectbox("Select gemstone", ["all"] + list(df.gemstone.unique()), on_change=reset_pages)
+    
     year_sel = st.selectbox(
         "Select the year",
         sorted(df.index.year.unique()),
         on_change=reset_pages
     )
 
+    if gemstone_sel == 'diamond':
+        clarity_sel = st.selectbox("Select clarity", ["all"] + list(df.clarity.unique()), on_change=reset_pages)
+    else:
+        clarity_sel == 'all'
+
     samples_df = df.loc[str(year_sel)]
     if gemstone_sel != "all":
         samples_df = samples_df[samples_df.gemstone == gemstone_sel]
+    
+    if clarity_sel != "all":
+        samples_df = samples_df[samples_df.clarity == clarity_sel]
+        
     if st.button("Display the next 40 lots", on_click=increment_counter):
         to_plot = samples_df.iloc[
             st.session_state.pages * 30 : (st.session_state.pages + 1) * 30
