@@ -8,3 +8,5 @@ streamlit-folium==0.6.0
 pillow==8.4.0
 requests==2.28.0
 mapclassify==2.4.3
+numpy
+datetime

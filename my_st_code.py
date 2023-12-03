@@ -19,10 +19,16 @@ world_gdf = gpd.read_file(DATA_PATH / "gem_location/gem_location.shp")
 # preprocessing
 df = df[df.carat >= 1].copy()
 carat_df = df.copy().set_index("StartDate")
+carat_df['price_with_fees'] = carat_df['PriceRealised']*(1+0.27)
 carat_df["price_per_ct"] = carat_df.PriceRealised / carat_df.carat
 
 st.title("My auction house")
 
+if 'pages' not in st.session_state:
+    st.session_state.pages = -1
+
+def reset_pages():
+     st.session_state.pages = -1
 # Create a navigation menu
 page = st.sidebar.selectbox(
     "Select a page",
@@ -32,9 +38,13 @@ page = st.sidebar.selectbox(
         "Colored gemstones",
         "My biggest sales",
     ],
+    on_change=reset_pages
 )
 
 if page == "Gems examples":
+    if 'pages' not in st.session_state:
+        st.session_state.pages = -1
+     
     plot_some_gems(carat_df)
 
 if page == "Diamonds":

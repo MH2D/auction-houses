@@ -6,9 +6,11 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import requests
 from io import BytesIO
+import numpy as np
+from datetime import date
 
-
-
+def reset_pages():
+     st.session_state.pages = -1
 
 def download_image(url):
     try:
@@ -21,46 +23,88 @@ def download_image(url):
         return None
 
 
-def get_random_sample(df, given_id=None):
+def get_random_sample(df, col, given_id=None):
 
     if given_id == None:
         row = df.sample().iloc[0]
     else:
         row = df[df.lot_id == given_id].iloc[0]
-    st.markdown(f"## {row.Title}")
+
     # st.table(row)
     try:
         image_url = row.ImageURL
         img = Image.open(BytesIO(download_image(image_url)))
+        # Get the dimensions of the image
+        width, height = img.size
+
+        # Determine the size of the square
+        size = min(width, height)
+
+        # Calculate the cropping box to keep the center of the image
+        left = (width - size) // 2
+        top = (height - size) // 2
+        right = (width + size) // 2
+        bottom = (height + size) // 2
+
+        # Crop the image to the square
+        img_cropped = img.crop((left, top, right, bottom))
         # Display the image using matplotlib.pyplot.imshow
-        st.image(img, caption="", width=400)
+        col.image(img_cropped, caption="", use_column_width="auto")
     except:
-        st.markdown("No Image")
+        col.markdown("No Image")
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Gemstone", f"{row.gemstone}")
-    col2.metric("Carat", f"{row.carat} carats")
-    col3.metric(
-        "Price Realised",
-        f"{row.PriceRealised:,.0f} €",
-        f"{row.PriceRealised - row.EstimateLow:,.0f} €",
-        help="The value underneath is the difference with the expert's low estimation",
+    # col1.metric("Gemstone", f"{row.gemstone}")
+    title = row.Title
+    if len(title) < 30:
+        title = title + "\n"
+    col.markdown(title)
+    col.markdown(f"{row.carat} carats")
+    if np.isnan(row.PriceRealised):
+        col.markdown("**Not sold")
+    else:
+        col.markdown(f"**Hammer price** {row.PriceRealised:,.0f} €")
+        col.markdown(f"**Price with fees** {row.price_with_fees:,.0f} €")
+    col.markdown(f"**Estimation** {row.EstimateLow:,.0f} -  {row.EstimateHigh:,.0f} €")
+
+    col.markdown(
+        f"{row.certifier.upper()}, report no. {row.certif_id}: {row.description}"
     )
 
-    st.markdown(
-        f"**Estimation window: {row.EstimateLow:,.0f} -  {row.EstimateHigh:,.0f} €**"
+    # st.markdown("**The original gem URL**")
+    # st.markdown(row.URL)
+
+
+def plot_some_gems(df, number=5, num_cols=3):
+    def increment_counter():
+        st.session_state.pages += 1
+
+    gemstone_sel = st.selectbox("Select gemstone", ["all"] + list(df.gemstone.unique()), on_change=reset_pages)
+    date_range = st.date_input(
+        "Select the period",
+        (df.index.min(), df.index.max()),
+        df.index.min(),
+        df.index.max(),
+        on_change=reset_pages
     )
-
-    st.markdown("**The original gem URL**")
-    st.markdown(row.URL)
-
-
-def plot_some_gems(df, number=5):
-    gemstone_sel = st.selectbox('Select gemstone', df.gemstone.unique())
-    year_sel = st.selectbox('Select the year', sorted(df.index.year.unique()))
-    engine_choice = st.selectbox('Select a price range', ['a', 'b', 'c'])
-    samples_df = df.sample(10)
-    if st.button('Display'):
-        for idx, row in samples_df.iterrows():
-            get_random_sample(df, given_id=row.lot_id)
+    start_date, end_date = date_range[0].strftime("%Y-%m-%d"), date_range[1].strftime(
+        "%Y-%m-%d"
+    )
+    samples_df = df.loc[start_date:end_date]
+    if gemstone_sel != "all":
+        samples_df = samples_df[samples_df.gemstone == gemstone_sel]
+    if st.button("Display next page", on_click=increment_counter):
+        st.write(st.session_state.pages)
+        to_plot = samples_df.iloc[
+            st.session_state.pages * 8 : (st.session_state.pages + 1) * 8
+        ].copy()
+        num_rows = len(to_plot) // num_cols
+        # Iterate over rows
+        for i in range(num_rows):
+            # Create columns for each row
+            cols = st.columns(num_cols)
+            # Fill each column with content (e.g., text)
+            for j, col in enumerate(cols):
+                get_random_sample(
+                    to_plot, col, given_id=to_plot.iloc[i * num_cols + j].lot_id
+                )
             st.divider()
