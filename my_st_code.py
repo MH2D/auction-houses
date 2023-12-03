@@ -86,17 +86,6 @@ if page == "Diamonds":
         )
         plots_clarity(diamond_df)
 
-    with visual_checks:
-        st.markdown(
-            """
-            ### Get some data examples
-            """
-        )
-
-        if st.button("Plot a data example"):
-            get_sample_lot(diamond_df)
-
-
 if page == "Colored gemstones":
     # do_monthly_balance(USERNAME)
     map_gemstones(carat_df, world_gdf)

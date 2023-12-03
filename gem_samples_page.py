@@ -57,7 +57,8 @@ def get_random_sample(df, col, given_id=None):
     title = row.Title
     if len(title) < 30:
         title = title + "\n"
-    col.markdown(title.upper())
+
+    col.markdown(f"[{title.upper()}]({row.URL})")
     col.markdown(f"{row.carat} carats")
     if np.isnan(row.PriceRealised):
         col.markdown("**Not sold**")
@@ -79,17 +80,13 @@ def plot_some_gems(df, number=5, num_cols=3):
         st.session_state.pages += 1
 
     gemstone_sel = st.selectbox("Select gemstone", ["all"] + list(df.gemstone.unique()), on_change=reset_pages)
-    date_range = st.date_input(
-        "Select the period",
-        (df.index.min(), df.index.max()),
-        df.index.min(),
-        df.index.max(),
+    year_sel = st.selectbox(
+        "Select the year",
+        sorted(df.index.year.unique()),
         on_change=reset_pages
     )
-    start_date, end_date = date_range[0].strftime("%Y-%m-%d"), date_range[1].strftime(
-        "%Y-%m-%d"
-    )
-    samples_df = df.loc[start_date:end_date]
+
+    samples_df = df.loc[str(year_sel)]
     if gemstone_sel != "all":
         samples_df = samples_df[samples_df.gemstone == gemstone_sel]
     if st.button("Display the next 40 lots", on_click=increment_counter):
