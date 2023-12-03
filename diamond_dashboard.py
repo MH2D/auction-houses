@@ -65,7 +65,7 @@ def plot_over_time_diamond(diamond_df):
         color="Year",
         barmode="group",
         # text='Number of lot',
-        color_discrete_sequence=px.colors.sequential.Oranges,
+        # color_discrete_sequence=px.colors.sequential.Oranges,
         category_orders={"Month": month_order},
     )
     price_over_time.update_layout(dragmode=False)
@@ -77,7 +77,7 @@ def plot_over_time_diamond(diamond_df):
         y="Number of lot",
         color="Year",
         barmode="group",
-        color_discrete_sequence=px.colors.sequential.Oranges,
+        # color_discrete_sequence=px.colors.sequential.Oranges,
         category_orders={"Month": month_order},
     )
     count_over_time.update_layout(dragmode=False)
