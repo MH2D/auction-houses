@@ -57,10 +57,10 @@ def get_random_sample(df, col, given_id=None):
     title = row.Title
     if len(title) < 30:
         title = title + "\n"
-    col.markdown(title)
+    col.markdown(title.upper())
     col.markdown(f"{row.carat} carats")
     if np.isnan(row.PriceRealised):
-        col.markdown("**Not sold")
+        col.markdown("**Not sold**")
     else:
         col.markdown(f"**Hammer price** {row.PriceRealised:,.0f} €")
         col.markdown(f"**Price with fees** {row.price_with_fees:,.0f} €")
@@ -92,19 +92,24 @@ def plot_some_gems(df, number=5, num_cols=3):
     samples_df = df.loc[start_date:end_date]
     if gemstone_sel != "all":
         samples_df = samples_df[samples_df.gemstone == gemstone_sel]
-    if st.button("Display next page", on_click=increment_counter):
-        st.write(st.session_state.pages)
+    if st.button("Display the next 40 lots", on_click=increment_counter):
         to_plot = samples_df.iloc[
-            st.session_state.pages * 8 : (st.session_state.pages + 1) * 8
+            st.session_state.pages * 30 : (st.session_state.pages + 1) * 30
         ].copy()
         num_rows = len(to_plot) // num_cols
         # Iterate over rows
+        if num_rows == 0:
+                st.warning('No lots to plot. Please change your selection.')
         for i in range(num_rows):
             # Create columns for each row
             cols = st.columns(num_cols)
             # Fill each column with content (e.g., text)
-            for j, col in enumerate(cols):
-                get_random_sample(
-                    to_plot, col, given_id=to_plot.iloc[i * num_cols + j].lot_id
-                )
-            st.divider()
+            st.write(len(to_plot))
+            if i * num_cols + num_cols  > len(to_plot):
+                st.warning('No more lots to plot. Please change your selection.')
+            else:
+                for j, col in enumerate(cols):
+                    get_random_sample(
+                        to_plot, col, given_id=to_plot.iloc[i * num_cols + j].lot_id
+                    )
+                st.divider()
