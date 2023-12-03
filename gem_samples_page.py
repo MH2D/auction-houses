@@ -89,8 +89,10 @@ def plot_some_gems(df, number=5, num_cols=3):
 
     if gemstone_sel == 'diamond':
         clarity_sel = st.selectbox("Select clarity", ["all"] + list(df.clarity.unique()), on_change=reset_pages)
+        color_sel = st.selectbox("Select clarity", ["all"] + list(df.color.unique()), on_change=reset_pages)
     else:
         clarity_sel = 'all'
+        color_sel = 'all'
 
     samples_df = df.copy() 
     if gemstone_sel != "all":
@@ -101,6 +103,9 @@ def plot_some_gems(df, number=5, num_cols=3):
     
     if year_sel != "all time":
         samples_df = samples_df.loc[str(year_sel)]
+    
+    if color_sel != "all":
+        samples_df = samples_df[samples_df.color == color_sel]
 
     if st.button("Display the next 40 lots", on_click=increment_counter):
         to_plot = samples_df.iloc[
