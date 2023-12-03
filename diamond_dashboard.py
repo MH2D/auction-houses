@@ -14,23 +14,30 @@ def plot_over_time_diamond(diamond_df):
 
     # Sample list of options
     selected_years = {one_year: False for one_year in all_years}
-
+    selected_years[2023] = True
     # Create a row of checkboxes
     # year_col = st.columns([1/len(all_years) for _ in range(len(all_years))])
     year_col = st.columns(len(all_years))
     for idx, elt in enumerate(iter(year_col)):
         with elt:
-            selected_years[all_years[idx]] = st.checkbox(str(all_years[idx]))
-    over_time_price_df = (
-        diamond_df[
-            diamond_df.index.year.isin(
-                [year for year, booli in selected_years.items() if booli == True]
-            )
-        ]
-        .resample("1M")[["PriceRealised"]]
-        .sum()
+            if idx < len(all_years) - 1:
+                selected_years[all_years[idx]] = st.checkbox(str(all_years[idx]))
+            else:
+                selected_years[all_years[idx]] = st.checkbox(
+                    str(all_years[idx]), value=True
+                )
+    over_time_price_df = (diamond_df
+        .groupby(pd.Grouper(freq='1M'))[["PriceRealised", "certifier"]]
+        .agg({"PriceRealised": "sum", "certifier": "count"})
+        .rename(columns={"certifier": "Number of lot"})
+        .dropna()
         .copy()
     )
+    over_time_price_df = over_time_price_df[
+            over_time_price_df.index.year.isin(
+                [year for year, booli in selected_years.items() if booli == True]
+            )
+        ].copy()
     # Extract month names and years from the index
     over_time_price_df["Month"] = over_time_price_df.index.month_name()
     over_time_price_df["Year"] = over_time_price_df.index.year.astype(str)
@@ -57,6 +64,7 @@ def plot_over_time_diamond(diamond_df):
         y="PriceRealised",
         color="Year",
         barmode="group",
+        text='Number of lot',
         color_discrete_sequence=px.colors.sequential.Oranges,
         category_orders={"Month": month_order},
     )
@@ -133,7 +141,7 @@ def plots_clarity(diamond_df):
 
         bar_price_clarity.update_layout(
             title=selected_variable,
-            yaxis=dict(title="Average €/carat"),
+            yaxis=dict(title=selected_variable),
             showlegend=False,
         )
 
@@ -165,7 +173,7 @@ def get_sample_lot(df, given_id=None):
         image_url = row.ImageURL
         img = Image.open(BytesIO(download_image(image_url)))
         # Display the image using matplotlib.pyplot.imshow
-        st.image(img, caption="", use_column_width=True)
+        st.image(img, caption="", width=400)
     except:
         st.markdown("No Image")
 
@@ -180,7 +188,9 @@ def get_sample_lot(df, given_id=None):
     col3.metric("Clarity", f"{row.clarity}")
 
     st.markdown("**Description**")
-    st.markdown(f"**Estimation window: {row.EstimateLow:,.0f} -  {row.EstimateHigh:,.0f} €**")
+    st.markdown(
+        f"**Estimation window: {row.EstimateLow:,.0f} -  {row.EstimateHigh:,.0f} €**"
+    )
 
     st.markdown(row.Description)
     st.markdown("**The original gem URL**")
