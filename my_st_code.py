@@ -34,14 +34,14 @@ def reset_pages():
 page = st.sidebar.selectbox(
     "Select a page",
     [
-        "Auction results",
+        "Auction results by gemstones",
         "Diamond market analysis",
         # "Colored gemstones market analysis",
     ],
     on_change=reset_pages
 )
 
-if page == "Auction results":
+if page == "Auction results by gemstones":
     if 'pages' not in st.session_state:
         st.session_state.pages = -1
      

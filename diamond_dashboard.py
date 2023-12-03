@@ -88,7 +88,6 @@ def plot_over_time_diamond(diamond_df):
     #     tickvals=list(range(1, 13)),  # Tick values for each month
     #     ticktext=month_order,  # Tick labels for each month
     # )
-    return bar_over_time
 
 
 def plots_clarity(diamond_df):
