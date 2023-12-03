@@ -83,7 +83,7 @@ def plot_some_gems(df, number=5, num_cols=3):
     
     year_sel = st.selectbox(
         "Select the year",
-        sorted(df.index.year.unique()),
+        ["all time"] + sorted(df.index.year.unique()),
         on_change=reset_pages
     )
 
@@ -92,12 +92,15 @@ def plot_some_gems(df, number=5, num_cols=3):
     else:
         clarity_sel = 'all'
 
-    samples_df = df.loc[str(year_sel)]
+    samples_df = df.copy() 
     if gemstone_sel != "all":
         samples_df = samples_df[samples_df.gemstone == gemstone_sel]
     
     if clarity_sel != "all":
         samples_df = samples_df[samples_df.clarity == clarity_sel]
+    
+    if year_sel != "all time":
+        samples_df = samples_df.loc[str(year_sel)]
 
     if st.button("Display the next 40 lots", on_click=increment_counter):
         to_plot = samples_df.iloc[
