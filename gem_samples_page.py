@@ -59,7 +59,7 @@ def plot_some_gems(df, number=5):
     gemstone_sel = st.selectbox('Select gemstone', df.gemstone.unique())
     year_sel = st.selectbox('Select the year', sorted(df.index.year.unique()))
     engine_choice = st.selectbox('Select a price range', ['a', 'b', 'c'])
-
+    samples_df = df.sample(10)
     if st.button('Display'):
         for idx, row in samples_df.iterrows():
             get_random_sample(df, given_id=row.lot_id)
