@@ -104,7 +104,6 @@ def plot_some_gems(df, number=5, num_cols=3):
             # Create columns for each row
             cols = st.columns(num_cols)
             # Fill each column with content (e.g., text)
-            st.write(len(to_plot))
             if i * num_cols + num_cols  > len(to_plot):
                 st.warning('No more lots to plot. Please change your selection.')
             else:
