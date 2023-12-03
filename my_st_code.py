@@ -8,6 +8,7 @@ from diamond_dashboard import (
     plots_clarity,
     get_sample_lot,
 )
+from gem_samples_page import plot_some_gems
 from colored_gems_dashboard import map_gemstones
 import geopandas as gpd
 
@@ -34,7 +35,7 @@ page = st.sidebar.selectbox(
 )
 
 if page == "Gems examples":
-    pass
+    plot_some_gems(carat_df)
 
 if page == "Diamonds":
     over_time, clarity_analysis, color_analysis, visual_checks = st.tabs(
