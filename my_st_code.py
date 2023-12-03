@@ -73,8 +73,7 @@ if page == "Diamond market analysis":
         ### Diamonds sales over time
         """
         )
-        bar_over_time = plot_over_time_diamond(diamond_df)
-        st.plotly_chart(bar_over_time, use_container_width=True)
+        plot_over_time_diamond(diamond_df)
 
     with clarity_analysis:
         st.markdown(
