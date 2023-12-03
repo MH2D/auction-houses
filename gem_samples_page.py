@@ -9,8 +9,10 @@ from io import BytesIO
 import numpy as np
 from datetime import date
 
+
 def reset_pages():
-     st.session_state.pages = -1
+    st.session_state.pages = -1
+
 
 def download_image(url):
     try:
@@ -79,33 +81,56 @@ def plot_some_gems(df, number=5, num_cols=3):
     def increment_counter():
         st.session_state.pages += 1
 
-    gemstone_sel = st.selectbox("Select gemstone", ["all"] + list(df.gemstone.unique()), on_change=reset_pages)
-    
+    gemstone_sel = st.selectbox(
+        "Select gemstone", ["all"] + list(df.gemstone.unique()), on_change=reset_pages
+    )
+
     year_sel = st.selectbox(
         "Select the year",
         ["all time"] + sorted(df.index.year.unique()),
-        on_change=reset_pages
+        on_change=reset_pages,
     )
 
-    if gemstone_sel == 'diamond':
-        clarity_sel = st.selectbox("Select clarity", ["all"] + list(df.clarity.unique()), on_change=reset_pages)
-        color_sel = st.selectbox("Select clarity", ["all"] + list(df.color.unique()), on_change=reset_pages)
+    if gemstone_sel == "diamond":
+        clarity_sel = st.selectbox(
+            "Select clarity", ["all"] + list(df.clarity.unique()), on_change=reset_pages
+        )
+        color_sel = st.selectbox(
+            "Select color", ["all"] + list(df.color.unique()), on_change=reset_pages
+        )
     else:
-        clarity_sel = 'all'
-        color_sel = 'all'
+        clarity_sel = "all"
+        color_sel = "all"
 
-    samples_df = df.copy() 
+    samples_df = df.copy()
     if gemstone_sel != "all":
         samples_df = samples_df[samples_df.gemstone == gemstone_sel]
-    
+
     if clarity_sel != "all":
         samples_df = samples_df[samples_df.clarity == clarity_sel]
-    
+
     if year_sel != "all time":
         samples_df = samples_df.loc[str(year_sel)]
-    
+
     if color_sel != "all":
         samples_df = samples_df[samples_df.color == color_sel]
+
+    sort_method = {
+        "price per carat": "price_per_carat",
+        "Price": "RealisedPrice",
+        "Carat": "carat",
+    }
+
+    sort_keys = list(sort_method.keys())
+    sort_col = st.columns(len(sort_keys))
+    we_sort = {sort_ty: False for sort_ty in sort_keys}
+
+    for idx, elt in enumerate(iter(sort_col)):
+        with elt:
+            we_sort[sort_keys[idx]] = st.checkbox(str(sort_keys[idx]))
+    samples_df = samples_df.sort_values(
+        by=[col for name, col in sort_method.items() if we_sort[name] == True]
+    )
 
     if st.button("Display the next 40 lots", on_click=increment_counter):
         to_plot = samples_df.iloc[
@@ -114,13 +139,13 @@ def plot_some_gems(df, number=5, num_cols=3):
         num_rows = len(to_plot) // num_cols
         # Iterate over rows
         if num_rows == 0:
-                st.warning('No lots to plot. Please change your selection.')
+            st.warning("No lots to plot. Please change your selection.")
         for i in range(num_rows):
             # Create columns for each row
             cols = st.columns(num_cols)
             # Fill each column with content (e.g., text)
-            if i * num_cols + num_cols  > len(to_plot):
-                st.warning('No more lots to plot. Please change your selection.')
+            if i * num_cols + num_cols > len(to_plot):
+                st.warning("No more lots to plot. Please change your selection.")
             else:
                 for j, col in enumerate(cols):
                     get_random_sample(

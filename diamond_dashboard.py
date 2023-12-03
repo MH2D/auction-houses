@@ -80,6 +80,7 @@ def plot_over_time_diamond(diamond_df):
         # color_discrete_sequence=px.colors.sequential.Oranges,
         category_orders={"Month": month_order},
     )
+    
     count_over_time.update_layout(dragmode=False)
     st.plotly_chart(count_over_time, use_container_width=True)
 
