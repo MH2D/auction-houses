@@ -48,7 +48,7 @@ if page == "Auction results":
     plot_some_gems(carat_df)
 
 if page == "Diamond market analysis":
-    over_time, clarity_analysis, color_analysis, visual_checks = st.tabs(
+    over_time, clarity_analysis = st.tabs(
         [
             "Sales over time",
             "Clarity analysis",
