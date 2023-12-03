@@ -34,27 +34,26 @@ def reset_pages():
 page = st.sidebar.selectbox(
     "Select a page",
     [
-        "Gems examples",
-        "Diamonds",
-        "Colored gemstones",
-        "My biggest sales",
+        "Auction results",
+        "Diamond market analysis",
+        "Colored gemstones market analysis",
     ],
     on_change=reset_pages
 )
 
-if page == "Gems examples":
+if page == "Auction results":
     if 'pages' not in st.session_state:
         st.session_state.pages = -1
      
     plot_some_gems(carat_df)
 
-if page == "Diamonds":
+if page == "Diamond market analysis":
     over_time, clarity_analysis, color_analysis, visual_checks = st.tabs(
         [
             "Sales over time",
             "Clarity analysis",
-            "Color analysis",
-            "Check some diamonds sales",
+            # "Color analysis",
+            # "Check some diamonds sales",
         ]
     )
     diamond_df = carat_df[carat_df.gemstone == "diamond"].copy()
@@ -86,6 +85,6 @@ if page == "Diamonds":
         )
         plots_clarity(diamond_df)
 
-if page == "Colored gemstones":
+if page == "Colored gemstones market analysis":
     # do_monthly_balance(USERNAME)
     map_gemstones(carat_df, world_gdf)
