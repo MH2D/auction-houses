@@ -36,7 +36,7 @@ page = st.sidebar.selectbox(
     [
         "Auction results",
         "Diamond market analysis",
-        "Colored gemstones market analysis",
+        # "Colored gemstones market analysis",
     ],
     on_change=reset_pages
 )
@@ -85,6 +85,6 @@ if page == "Diamond market analysis":
         )
         plots_clarity(diamond_df)
 
-if page == "Colored gemstones market analysis":
-    # do_monthly_balance(USERNAME)
-    map_gemstones(carat_df, world_gdf)
+# if page == "Colored gemstones market analysis":
+#     # do_monthly_balance(USERNAME)
+#     map_gemstones(carat_df, world_gdf)

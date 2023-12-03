@@ -58,17 +58,31 @@ def plot_over_time_diamond(diamond_df):
         "December",
     ]
 
-    bar_over_time = px.bar(
+    price_over_time = px.bar(
         over_time_price_df,
         x="Month",
         y="PriceRealised",
         color="Year",
         barmode="group",
-        text='Number of lot',
+        # text='Number of lot',
         color_discrete_sequence=px.colors.sequential.Oranges,
         category_orders={"Month": month_order},
     )
-    bar_over_time.update_layout(dragmode=False)
+    price_over_time.update_layout(dragmode=False)
+    st.plotly_chart(price_over_time, use_container_width=True)
+
+    count_over_time = px.bar(
+        over_time_price_df,
+        x="Month",
+        y="Number of lot",
+        color="Year",
+        barmode="group",
+        color_discrete_sequence=px.colors.sequential.Oranges,
+        category_orders={"Month": month_order},
+    )
+    count_over_time.update_layout(dragmode=False)
+    st.plotly_chart(count_over_time, use_container_width=True)
+
     # bar_over_time.update_xaxes(
     #     tickmode="array",
     #     tickvals=list(range(1, 13)),  # Tick values for each month
@@ -214,8 +228,7 @@ def main_diamond(carat_df):
     ### Diamonds sales over time
     """
     )
-    bar_over_time = plot_over_time_diamond(diamond_df)
-    st.plotly_chart(bar_over_time, use_container_width=True)
+    plot_over_time_diamond(diamond_df)
 
     st.markdown(
         """
