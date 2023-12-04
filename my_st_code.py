@@ -48,7 +48,7 @@ with aution_result:
     gems_search, signature_search = st.tabs(
         [
             "Gemstone",
-            "Jewelry",
+            "Signed jewelry",
             # Add more tabs if needed for other pages
         ]
     )
