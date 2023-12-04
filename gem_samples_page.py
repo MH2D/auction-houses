@@ -53,18 +53,20 @@ def get_random_sample(_df, _col, _given_id=None):
     except:
         _col.markdown("No Image")
 
-    # col1.metric("Gemstone", f"{row.gemstone}")
-    title = row.Title
-    if len(title) < 30:
-        title = title + "\n"
 
-    _col.markdown(f"[{title.upper()}]({row.URL})")
-    _col.markdown(f"{row.carat} carats")
+    _col.markdown(f"[{row.Title.upper()}]({row.URL})")
+    _col.markdown(f"**{row.carat} carats**")
     if np.isnan(row.PriceRealised):
         _col.markdown("**Not sold**")
     else:
-        _col.markdown(f"**Hammer price** {row.PriceRealised:,.0f} €")
+        _col.markdown(f'''
+        **Hammer price** {row.PriceRealised:,.0f} €
+        '''
+        )
+
+        _col.markdown(f'''**{row.price_per_ct:,.0f} €/carats**''')
         _col.markdown(f"**Price with fees** {row.price_with_fees:,.0f} €")
+        
     _col.markdown(f"**Estimation** {row.EstimateLow:,.0f} -  {row.EstimateHigh:,.0f} €")
 
     _col.markdown(
