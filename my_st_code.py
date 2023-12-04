@@ -25,29 +25,32 @@ carat_df["price_per_ct"] = carat_df.PriceRealised / carat_df.carat
 
 st.title("My auction house")
 
+
+
+
 if 'pages' not in st.session_state:
-    st.session_state.pages = -1
+    st.session_state.pages = 0
 
 def reset_pages():
-     st.session_state.pages = -1
-# Create a navigation menu
-page = st.sidebar.selectbox(
-    "Select a page",
-    [
-        "Auction results by gemstones",
-        "Diamond market analysis",
-        # "Colored gemstones market analysis",
-    ],
-    on_change=reset_pages
-)
+     st.session_state.pages = 0
 
-if page == "Auction results by gemstones":
+
+# Create a navigation menu
+aution_result, diamond_market = st.tabs(
+        [
+            "Auction results by gemstones",
+            "Diamond market analysis",
+            # Add more tabs if needed for other pages
+        ]
+    )
+
+with aution_result:
     if 'pages' not in st.session_state:
         st.session_state.pages = -1
      
     plot_some_gems(carat_df)
-
-if page == "Diamond market analysis":
+    # testing_stuff()
+with diamond_market:
     over_time, clarity_analysis = st.tabs(
         [
             "Sales over time",
