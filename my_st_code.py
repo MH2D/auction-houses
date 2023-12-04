@@ -38,17 +38,27 @@ def reset_pages():
 # Create a navigation menu
 aution_result, diamond_market = st.tabs(
         [
-            "Auction results by gemstones",
-            "Diamond market analysis",
+            "Auction results",
+            "Diamond market",
             # Add more tabs if needed for other pages
         ]
     )
 
 with aution_result:
-    if 'pages' not in st.session_state:
-        st.session_state.pages = -1
-     
-    plot_some_gems(carat_df)
+    gems_search, signature_search = st.tabs(
+        [
+            "Gemstones",
+            "Jewelleries",
+            # Add more tabs if needed for other pages
+        ]
+    )
+    with gems_search:
+        if 'pages' not in st.session_state:
+            st.session_state.pages = -1
+        
+        plot_some_gems(carat_df)
+    with signature_search:
+        pass
     # testing_stuff()
 with diamond_market:
     over_time, clarity_analysis = st.tabs(

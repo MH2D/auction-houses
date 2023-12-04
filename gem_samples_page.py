@@ -145,7 +145,7 @@ def get_next_elements(samples_df, current_page, cols_in_page, row_per_pages):
     return next_elements
 
 
-def plot_some_gems(df, number=5, cols_in_page=3, row_per_pages=30):
+def plot_some_gems(df, number=5, cols_in_page=3, row_per_pages=5):
     def increment_counter():
         st.session_state.pages += 1
 
